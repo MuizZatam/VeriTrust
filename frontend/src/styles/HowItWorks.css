@@ -8,18 +8,6 @@
   border-radius: 50px;
 }
 
-/* --- REMOVED THE ::before RULE --- */
-/*
-.how-it-works::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: #ffffff;
-  z-index: 1;
-  pointer-events: none;
-}
-*/
-
 /* Pin container */
 .pin-container {
   height: auto;
@@ -171,13 +159,14 @@
 
 .step-number {
   position: absolute;
-  bottom: 35%;
-  right: 5%;
-  font-size: clamp(8rem, 15vw, 12rem);
+  bottom: 60%;
+  left: 12%;
+  font-size: clamp(5rem, 12vw, 10rem);
   font-weight: 900;
+  filter: blur(1.5px);
   /* Lighter opacity for dark theme */
   color: rgba(255, 255, 255, 0.05);
-  z-index: -1;
+  z-index: 1;
   user-select: none;
 }
 

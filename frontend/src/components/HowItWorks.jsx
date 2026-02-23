@@ -102,9 +102,10 @@ const HowItWorks = memo(() => {
       ScrollTrigger.create({
         trigger: mainContainer,
         scroller: scroller,
-        start: 'center bottom',
+        start: 'top bottom',
         end: 'bottom top',
         scrub: 1.2,
+        //markers: true,
         id: 'blob-scroll',
         onUpdate: (self) => {
           const scrollDelta = self.scroll() - lastScroll;
@@ -151,6 +152,7 @@ const HowItWorks = memo(() => {
         pin: '.blob-container',
         pinSpacing: false,
         id: 'blob-pin',
+        //markers: true,
       });
       // --- End Blob Logic ---
 
@@ -197,7 +199,6 @@ const HowItWorks = memo(() => {
       gsap.set(descriptionWords, { y: 15, opacity: 0, force3D: true });
       gsap.set(stepIcons, {
         scale: 0.8,
-        rotation: -90,
         opacity: 0,
         force3D: true,
       });
@@ -251,9 +252,7 @@ const HowItWorks = memo(() => {
             stepIcon,
             {
               scale: 1,
-              rotation: 0,
               opacity: 1,
-              duration: 0.5,
               ease: 'back.out(1.2)',
             },
             '-=0.2'
@@ -264,7 +263,7 @@ const HowItWorks = memo(() => {
             { y: 0, opacity: 1, duration: 0.5, stagger: 0.015 },
             '-=0.3'
           )
-          .to({}, { duration: 0.5 }) // Hold
+          .to({}, { duration: 1 }) // Hold
           .to(stepTitle, { opacity: 0, duration: 0.6 })
           .to(
             stepDescriptionWords,
