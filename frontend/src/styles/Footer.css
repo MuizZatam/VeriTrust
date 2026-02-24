@@ -1,13 +1,14 @@
 /* Font Face Declarations */
 @font-face {
   font-family: "GeneralSans-Semibold";
-  src: url("/assets/fonts/GeneralSans-Semibold.otf") format("opentype");
+  src: url("../assets/fonts/GeneralSans-Semibold.otf") format("opentype");
   font-weight: 600;
   font-style: normal;
 }
+
 @font-face {
   font-family: "GeneralSans-Extralight";
-  src: url("/assets/fonts/GeneralSans-Extralight.otf") format("opentype");
+  src: url("../assets/fonts/GeneralSans-Extralight.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
 }
@@ -19,21 +20,21 @@
   /* Fonts */
   --font-primary: "GeneralSans-Semibold", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-light: "GeneralSans-Extralight", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  
+
   /* Colors */
-  --primary-color: #3b82f6;
-  --secondary-color: #8b5cf6;
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --text-muted: rgba(255, 255, 255, 0.6);
-  --border-color: rgba(255, 255, 255, 0.1);
-  --glass-primary: rgba(59, 130, 246, 0.08);
-  --glass-primary-hover: rgba(59, 130, 246, 0.15);
-  --glass-secondary: rgba(255, 255, 255, 0.06);
-  --glass-secondary-hover: rgba(255, 255, 255, 0.12);
-  --border-glass: rgba(59, 130, 246, 0.2);
-  --border-glass-hover: rgba(59, 130, 246, 0.4);
-  
+  --primary-color: var(--accent-cyan, #22d3ee);
+  --secondary-color: var(--accent-purple, #c084fc);
+  --text-primary: var(--text-primary, #f8fafc);
+  --text-secondary: var(--text-secondary, #e2e8f0);
+  --text-muted: rgba(255, 255, 255, 0.5);
+  --border-color: var(--glass-border, rgba(255, 255, 255, 0.06));
+  --glass-primary: var(--glass-bg, rgba(255, 255, 255, 0.02));
+  --glass-primary-hover: rgba(34, 211, 238, 0.05);
+  --glass-secondary: rgba(255, 255, 255, 0.01);
+  --glass-secondary-hover: rgba(255, 255, 255, 0.04);
+  --border-glass: rgba(255, 255, 255, 0.04);
+  --border-glass-hover: rgba(34, 211, 238, 0.2);
+
   /* Spacing */
   --spacing-xs: 8px;
   --spacing-sm: 12px;
@@ -42,18 +43,18 @@
   --spacing-xl: 32px;
   --spacing-2xl: 48px;
   --spacing-3xl: 64px;
-  
+
   /* Shadows */
-  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
-  --shadow-lg: 0 8px 24px rgba(59, 130, 246, 0.2);
-  --shadow-glow: 0 0 8px rgba(59, 130, 246, 0.4);
-  
+  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 32px rgba(34, 211, 238, 0.15);
+  --shadow-glow: 0 0 12px rgba(34, 211, 238, 0.3);
+
   /* Border radius */
   --radius-sm: 8px;
   --radius-md: 10px;
   --radius-lg: 12px;
-  
+
   /* Transitions */
   --transition-smooth: all 0.3s ease;
 }
@@ -294,20 +295,22 @@
 
 /* Animations */
 @keyframes logoGlow {
-  0% { 
-    background-position: 0% 50%; 
+  0% {
+    background-position: 0% 50%;
   }
-  100% { 
-    background-position: 100% 50%; 
+
+  100% {
+    background-position: 100% 50%;
   }
 }
 
 @keyframes headerGlow {
-  0% { 
+  0% {
     opacity: 0.3;
     transform: scaleX(0.8);
   }
-  100% { 
+
+  100% {
     opacity: 0.8;
     transform: scaleX(1);
   }
@@ -326,7 +329,7 @@
     text-align: center;
     margin-bottom: 20px;
   }
-  
+
   .social-links {
     justify-content: center;
   }
@@ -336,7 +339,7 @@
   .footer {
     padding: var(--spacing-2xl) 0 0;
   }
-  
+
   .footer-content {
     grid-template-columns: 1fr;
     gap: var(--spacing-xl);
@@ -378,7 +381,7 @@
     padding: var(--spacing-sm);
     min-height: 56px;
   }
-  
+
   .contact-item span:last-child {
     font-size: 13px;
   }
@@ -386,11 +389,12 @@
 
 /* Accessibility improvements */
 @media (prefers-reduced-motion: reduce) {
+
   .footer-logo,
   .footer::before {
     animation: none;
   }
-  
+
   .social-link:hover,
   .footer-links a:hover,
   .contact-item:hover {
@@ -400,12 +404,13 @@
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
+
   .social-link,
   .contact-item {
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.3);
   }
-  
+
   .footer-logo {
     background: var(--text-primary);
     -webkit-background-clip: unset;

@@ -55,12 +55,10 @@ const useSmoothScroll = () => {
     });
 
     // --- Background animation ---
-    // Note: This animates `document.body`. Ensure your CSS
-    // is set up for this (e.g., `body { background-size: 100% 100%; }`).
     const startSize = 100;
     const endSize = 180;
 
-    const bgTween = gsap.to(document.body, {
+    gsap.to('.smooth-wrapper', {
       backgroundSize: `${endSize}% ${endSize}%`, // Animate to this value
       ease: 'none',
       scrollTrigger: {
@@ -69,12 +67,10 @@ const useSmoothScroll = () => {
         end: 'bottom bottom',
         scrub: 0.3,
         invalidateOnRefresh: true,
-        // --- Optimization: Simplified onUpdate ---
-        // `self.progress` is already a 0-1 value.
-        // We can use it directly for interpolation.
         onUpdate: (self) => {
           const currentSize = startSize + (endSize - startSize) * self.progress;
-          document.body.style.backgroundSize = `${currentSize}% ${currentSize}%`;
+          const wrapper = document.querySelector('.smooth-wrapper');
+          if (wrapper) wrapper.style.backgroundSize = `${currentSize}% ${currentSize}%`;
         },
       },
     });

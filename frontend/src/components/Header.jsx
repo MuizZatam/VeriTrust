@@ -7,6 +7,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+import { Menu, X } from 'lucide-react';
 import logo from '../assets/VT_logo.png';
 
 // --- Optimization: GSAP Plugin Registration ---
@@ -47,6 +48,8 @@ const applyMatrixEffect = (element) => {
   let intervals = []; // Store intervals for cleanup
 
   const handleMouseEnter = () => {
+    if (window.innerWidth <= 768) return; // Disable on mobile
+
     // 1. Fade out
     letterSpans.forEach((span) => {
       span.style.transition = 'none';
@@ -106,13 +109,11 @@ const applyMatrixEffect = (element) => {
           const scaleIndex = glitchCount % 4;
 
           span.style.color = '#f1f5f9';
-          span.style.transform = `scale(${scales[scaleIndex]}) translateY(-${
-            Math.random() * 3
-          }px) rotate(${(Math.random() - 0.5) * 10}deg)`;
+          span.style.transform = `scale(${scales[scaleIndex]}) translateY(-${Math.random() * 3
+            }px) rotate(${(Math.random() - 0.5) * 10}deg)`;
           span.style.textShadow = shadows[scaleIndex];
-          span.style.filter = `blur(${Math.random() * 0.5}px) brightness(${
-            0.8 + Math.random() * 0.4
-          })`;
+          span.style.filter = `blur(${Math.random() * 0.5}px) brightness(${0.8 + Math.random() * 0.4
+            })`;
 
           glitchCount++;
         }, 40 + Math.random() * 40);
@@ -122,6 +123,8 @@ const applyMatrixEffect = (element) => {
   };
 
   const handleMouseLeave = () => {
+    if (window.innerWidth <= 768) return; // Disable on mobile
+
     // Clear all running glitch intervals immediately
     intervals.forEach(clearInterval);
     intervals = [];
@@ -192,211 +195,214 @@ const NavLink = ({ href, onClick, children }) => {
 // 1. Moved outside the `Header` to prevent re-creation on every render.
 // 2. `React.memo` prevents re-renders if its props (`onScrollTo`)
 //    haven't changed.
-const NavigationComponent = React.memo(({ onScrollTo }) => {
+const NavigationComponent = React.memo(({ onScrollTo, isOpen, closeMenu }) => {
   const navContainerRef = useRef(null);
   const navLinksRef = useRef(null);
   const dotsRef = useRef(null);
   const navRef = useRef(null);
 
   useGSAP(() => {
-    let currentScrollProgress = 0;
-    let isHovered = false;
-
     const navContainer = navContainerRef.current;
     const navLinks = navLinksRef.current;
     const dots = dotsRef.current;
 
-    // --- Optimization: Performance ---
-    // `force3D: true` hints to the browser to use hardware acceleration.
-    gsap.set(navContainer, {
-      scale: 1,
-      transformOrigin: 'center center',
-      force3D: true,
-    });
-    gsap.set(navLinks, {
-      scale: 1,
-      opacity: 1,
-      y: 0,
-      transformOrigin: 'center center',
-      force3D: true,
-    });
-    gsap.set(dots, {
-      scale: 1,
-      opacity: 0,
-      y: 10,
-      pointerEvents: 'none',
-      transformOrigin: 'center center',
-      force3D: true,
-    });
+    let mm = gsap.matchMedia();
 
-    const scrollTriggerInstance = ScrollTrigger.create({
-      trigger: '#header', // Changed to ID selector for more specificity
-      start: 'bottom top+=100',
-      end: 'bottom top+=20',
-      scrub: 1,
-      invalidateOnRefresh: true,
-      onUpdate: (self) => {
-        currentScrollProgress = self.progress;
+    // Desktop animations
+    mm.add("(min-width: 769px)", () => {
+      let currentScrollProgress = 0;
+      let isHovered = false;
 
-        if (!isHovered && self.progress > 0) {
-          const scaleValue = gsap.utils.interpolate(1, 0.7, self.progress);
+      // --- Optimization: Performance ---
+      // `force3D: true` hints to the browser to use hardware acceleration.
+      gsap.set(navContainer, {
+        scale: 1,
+        transformOrigin: 'center center',
+        force3D: true,
+      });
+      gsap.set(navLinks, {
+        scale: 1,
+        opacity: 1,
+        y: 0,
+        transformOrigin: 'center center',
+        force3D: true,
+      });
+      gsap.set(dots, {
+        scale: 1,
+        opacity: 0,
+        y: 10,
+        pointerEvents: 'none',
+        transformOrigin: 'center center',
+        force3D: true,
+      });
+
+      ScrollTrigger.create({
+        trigger: '#header', // Changed to ID selector for more specificity
+        start: 'bottom top+=100',
+        end: 'bottom top+=20',
+        scrub: 1,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          currentScrollProgress = self.progress;
+
+          if (!isHovered && self.progress > 0) {
+            const scaleValue = gsap.utils.interpolate(1, 0.7, self.progress);
+            const linkOpacity = gsap.utils.interpolate(
+              1,
+              0,
+              (self.progress - 0.3) / 0.4
+            );
+            const linkY = gsap.utils.interpolate(
+              0,
+              -15,
+              (self.progress - 0.3) / 0.4
+            );
+            const dotOpacity = gsap.utils.interpolate(
+              0,
+              1,
+              (self.progress - 0.6) / 0.4
+            );
+            const dotY = gsap.utils.interpolate(
+              10,
+              0,
+              (self.progress - 0.6) / 0.4
+            );
+
+            // --- CRITICAL PERFORMANCE OPTIMIZATION ---
+            // Replaced slow `gsap.timeline()` with `gsap.to()`.
+            // This stops creating/destroying timelines on every scroll frame.
+            gsap.to(navContainer, {
+              scale: scaleValue,
+              duration: 0.1,
+              ease: 'none',
+            });
+            gsap.to(navLinks, {
+              opacity: self.progress > 0.3 ? linkOpacity : 1,
+              y: self.progress > 0.3 ? linkY : 0,
+              duration: 0.1,
+              ease: 'none',
+            });
+            gsap.to(dots, {
+              opacity: self.progress > 0.6 ? dotOpacity : 0,
+              y: self.progress > 0.6 ? dotY : 10,
+              pointerEvents: self.progress > 0.6 ? 'auto' : 'none',
+              duration: 0.1,
+              ease: 'none',
+            });
+          }
+        },
+      });
+
+      // Hover logic remains timeline-based, which is fine as
+      // it only runs on mouse events, not on every scroll frame.
+      const handleMouseEnter = () => {
+        isHovered = true;
+        if (currentScrollProgress > 0) {
+          gsap
+            .timeline()
+            .to(navContainer, {
+              scale: 1,
+              duration: 0.4,
+              ease: 'power2.out',
+              force3D: true,
+            })
+            .to(
+              dots,
+              { opacity: 0, y: 10, pointerEvents: 'none', duration: 0.2 },
+              0
+            )
+            .to(navLinks, { opacity: 1, y: 0, duration: 0.3 }, 0.1);
+        }
+      };
+
+      const handleMouseLeave = () => {
+        isHovered = false;
+        if (currentScrollProgress > 0) {
+          const scaleValue = gsap.utils.interpolate(
+            1,
+            0.7,
+            currentScrollProgress
+          );
           const linkOpacity = gsap.utils.interpolate(
             1,
             0,
-            (self.progress - 0.3) / 0.4
+            (currentScrollProgress - 0.3) / 0.4
           );
           const linkY = gsap.utils.interpolate(
             0,
             -15,
-            (self.progress - 0.3) / 0.4
+            (currentScrollProgress - 0.3) / 0.4
           );
           const dotOpacity = gsap.utils.interpolate(
             0,
             1,
-            (self.progress - 0.6) / 0.4
+            (currentScrollProgress - 0.6) / 0.4
           );
           const dotY = gsap.utils.interpolate(
             10,
             0,
-            (self.progress - 0.6) / 0.4
+            (currentScrollProgress - 0.6) / 0.4
           );
 
-          // --- CRITICAL PERFORMANCE OPTIMIZATION ---
-          // Replaced slow `gsap.timeline()` with `gsap.to()`.
-          // This stops creating/destroying timelines on every scroll frame.
-          gsap.to(navContainer, {
+          const tl = gsap.timeline();
+          tl.to(navContainer, {
             scale: scaleValue,
-            duration: 0.1,
-            ease: 'none',
-          });
-          gsap.to(navLinks, {
-            opacity: self.progress > 0.3 ? linkOpacity : 1,
-            y: self.progress > 0.3 ? linkY : 0,
-            duration: 0.1,
-            ease: 'none',
-          });
-          gsap.to(dots, {
-            opacity: self.progress > 0.6 ? dotOpacity : 0,
-            y: self.progress > 0.6 ? dotY : 10,
-            pointerEvents: self.progress > 0.6 ? 'auto' : 'none',
-            duration: 0.1,
-            ease: 'none',
-          });
-        }
-      },
-    });
-
-    // Hover logic remains timeline-based, which is fine as
-    // it only runs on mouse events, not on every scroll frame.
-    const handleMouseEnter = () => {
-      isHovered = true;
-      if (currentScrollProgress > 0) {
-        gsap
-          .timeline()
-          .to(navContainer, {
-            scale: 1,
             duration: 0.4,
             ease: 'power2.out',
             force3D: true,
-          })
-          .to(
-            dots,
-            { opacity: 0, y: 10, pointerEvents: 'none', duration: 0.2 },
-            0
-          )
-          .to(navLinks, { opacity: 1, y: 0, duration: 0.3 }, 0.1);
-      }
-    };
+          });
 
-    const handleMouseLeave = () => {
-      isHovered = false;
-      if (currentScrollProgress > 0) {
-        const scaleValue = gsap.utils.interpolate(
-          1,
-          0.7,
-          currentScrollProgress
-        );
-        const linkOpacity = gsap.utils.interpolate(
-          1,
-          0,
-          (currentScrollProgress - 0.3) / 0.4
-        );
-        const linkY = gsap.utils.interpolate(
-          0,
-          -15,
-          (currentScrollProgress - 0.3) / 0.4
-        );
-        const dotOpacity = gsap.utils.interpolate(
-          0,
-          1,
-          (currentScrollProgress - 0.6) / 0.4
-        );
-        const dotY = gsap.utils.interpolate(
-          10,
-          0,
-          (currentScrollProgress - 0.6) / 0.4
-        );
-
-        const tl = gsap.timeline();
-        tl.to(navContainer, {
-          scale: scaleValue,
-          duration: 0.4,
-          ease: 'power2.out',
-          force3D: true,
-        });
-
-        if (currentScrollProgress > 0.3) {
-          tl.to(
-            navLinks,
-            { opacity: linkOpacity, y: linkY, duration: 0.2 },
-            0
-          );
+          if (currentScrollProgress > 0.3) {
+            tl.to(
+              navLinks,
+              { opacity: linkOpacity, y: linkY, duration: 0.2 },
+              0
+            );
+          }
+          if (currentScrollProgress > 0.6) {
+            tl.to(
+              dots,
+              {
+                opacity: dotOpacity,
+                y: dotY,
+                pointerEvents: 'auto',
+                duration: 0.3,
+              },
+              0.1
+            );
+          } else {
+            tl.to(
+              dots,
+              { opacity: 0, y: 10, pointerEvents: 'none', duration: 0.3 },
+              0.1
+            );
+          }
         }
-        if (currentScrollProgress > 0.6) {
-          tl.to(
-            dots,
-            {
-              opacity: dotOpacity,
-              y: dotY,
-              pointerEvents: 'auto',
-              duration: 0.3,
-            },
-            0.1
-          );
-        } else {
-          tl.to(
-            dots,
-            { opacity: 0, y: 10, pointerEvents: 'none', duration: 0.3 },
-            0.1
-          );
-        }
-      }
-    };
+      };
 
-    navContainer.addEventListener('mouseenter', handleMouseEnter);
-    navContainer.addEventListener('mouseleave', handleMouseLeave);
+      navContainer.addEventListener('mouseenter', handleMouseEnter);
+      navContainer.addEventListener('mouseleave', handleMouseLeave);
 
-    return () => {
-      navContainer.removeEventListener('mouseenter', handleMouseEnter);
-      navContainer.removeEventListener('mouseleave', handleMouseLeave);
-      scrollTriggerInstance.kill();
-    };
-  }); // Removed scope to allow ScrollTrigger to find elements outside nav container
+      return () => {
+        mm.revert();
+      };
+    }); // end mm.add
+  }, []); // Empty dependency array prevents infinite re-renders without breaking external GSAP selectors
 
   return (
     <div
-      className="nav-container gsap-nav"
+      className={`nav-container gsap-nav ${isOpen ? 'mobile-open' : ''}`}
       ref={navContainerRef}
       style={{
         position: 'fixed',
-        top: '24px',
-        left: '50%',
-        transform: 'translateX(-50%)',
+        top: window.innerWidth <= 768 ? '0' : '24px',
+        left: window.innerWidth <= 768 ? '0' : '50%',
+        transform: window.innerWidth <= 768 ? 'none' : 'translateX(-50%)',
         zIndex: 1000,
       }}
     >
       <nav className="nav" ref={navRef}>
-        <div className="nav-links" ref={navLinksRef}>
+        <div className={`nav-links ${isOpen ? 'open' : ''}`} ref={navLinksRef}>
           {/* --- Optimization: Data-Driven Links --- */}
           {navLinksData.map((link) => (
             <NavLink
@@ -405,6 +411,7 @@ const NavigationComponent = React.memo(({ onScrollTo }) => {
               onClick={(e) => {
                 e.preventDefault();
                 onScrollTo(link.section);
+                closeMenu();
               }}
             >
               {link.label}
@@ -426,6 +433,7 @@ NavigationComponent.displayName = 'NavigationComponent';
 
 const Header = () => {
   const [navPortal, setNavPortal] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // --- Optimization: Portal Creation ---
   // This effect runs only once on mount to find/create the portal target.
@@ -445,9 +453,6 @@ const Header = () => {
     // No cleanup needed, portal should persist
   }, []);
 
-  // --- Optimization: useCallback ---
-  // `scrollToSection` is memoized so it can be passed to the
-  // memoized `NavigationComponent` without breaking its memoization.
   const scrollToSection = useCallback((sectionId) => {
     gsap.to(window, {
       duration: 1,
@@ -491,15 +496,26 @@ const Header = () => {
           <div className="nav-placeholder"></div>
           <div className="header-actions">
             {/* Actions (e.g., buttons) would go here */}
+            <button
+              className="mobile-menu-toggle"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle Mobile Menu"
+            >
+              {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
           </div>
         </div>
       </header>
       {/* --- Optimization: React Portal --- */}
       {/* The navigation is rendered into the portal element,
-          detaching it from the header's DOM hierarchy. */}
+        detaching it from the header's DOM hierarchy. */}
       {navPortal &&
         createPortal(
-          <NavigationComponent onScrollTo={scrollToSection} />,
+          <NavigationComponent
+            onScrollTo={scrollToSection}
+            isOpen={isMobileMenuOpen}
+            closeMenu={() => setIsMobileMenuOpen(false)}
+          />,
           navPortal
         )}
     </>

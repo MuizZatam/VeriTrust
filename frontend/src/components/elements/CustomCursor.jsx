@@ -45,25 +45,7 @@ const ARROW_STYLES = {
   left: '-10px', // Offset to center
 };
 
-// The CSS string to hide the default cursor
-const INTERNAL_STYLES = `
-  @media (hover: hover) and (pointer: fine) {
-    * {
-      cursor: none !important;
-    }
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    textarea {
-      cursor: text !important;
-    }
-  }
-  @media (hover: none) and (pointer: coarse) {
-    * {
-      cursor: auto !important;
-    }
-  }
-`;
+import './CustomCursor.css';
 
 // --- Optimization: Memoized Component ---
 // Wrapped in React.memo to prevent re-renders from parent components.
@@ -73,10 +55,6 @@ const CustomCursor = memo(() => {
 
   return (
     <>
-      {/* This <style> tag is rendered once and its content is
-          a static constant, making it very cheap. */}
-      <style>{INTERNAL_STYLES}</style>
-
       {/* --- Optimization: Accessibility --- */}
       {/* This is a purely decorative element and should be
           hidden from the accessibility tree. */}

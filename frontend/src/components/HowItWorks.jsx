@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useMemo, memo } from 'react';
-// No new imports added, as requested.
 import '../styles/HowItWorks.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/all';
@@ -13,7 +12,7 @@ gsap.registerPlugin(ScrollTrigger);
 // This prevents the array from being recreated on every render.
 const steps = [
   {
-    icon: '🪪',
+    icon: '✍️',
     title: 'Own Your Digital Identity',
     description:
       'Start by connecting your Web3 wallet - your decentralized ID in the VeriTrust ecosystem. No more rented profiles. Your reputation, skills, and data truly belong to you — forever stored and verified on Ethereum.',
@@ -82,78 +81,31 @@ const HowItWorks = memo(() => {
         '.step-description .word-span'
       );
       const stepIcons = gsap.utils.toArray('.step-icon');
-      const blobs = gsap.utils.toArray('.blob');
       const mainContainer = containerRef.current;
 
-      // --- Blob Animation Logic ---
+      // We no longer need the GSAP blob logic since we are using React Three Fiber.
       const blobContainer = document.querySelector('.blob-container');
-      gsap.set(blobContainer, {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        overflow: 'visible',
-        zIndex: 0,
-      });
-      gsap.set(blobs, { opacity: 0.8, force3D: true });
-
-      let lastScroll = 0;
-      ScrollTrigger.create({
-        trigger: mainContainer,
-        scroller: scroller,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: 1.2,
-        //markers: true,
-        id: 'blob-scroll',
-        onUpdate: (self) => {
-          const scrollDelta = self.scroll() - lastScroll;
-          lastScroll = self.scroll();
-          blobs.forEach((blob) => {
-            gsap.to(blob, {
-              y: `+=${scrollDelta * 0.2}`,
-              duration: 0.8,
-              ease: 'power1.out',
-              overwrite: 'auto',
-              force3D: true,
-            });
-          });
-        },
-      });
-
-      blobs.forEach((blob) => {
-        gsap.set(blob, {
-          xPercent: gsap.utils.random(-150, -50),
-          yPercent: gsap.utils.random(-30, 30),
-          scale: gsap.utils.random(0.8, 1.2),
+      if (blobContainer) {
+        gsap.set(blobContainer, {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          overflow: 'visible',
+          zIndex: 0,
         });
-        gsap.to(blob, {
-          xPercent: '+=300',
-          duration: gsap.utils.random(12, 20),
-          ease: 'none',
-          repeat: -1,
-          modifiers: { xPercent: (x) => parseFloat(x) % 300 },
-        });
-        gsap.to(blob, {
-          yPercent: '+=20',
-          duration: gsap.utils.random(4, 6),
-          yoyo: true,
-          repeat: -1,
-          ease: 'sine.inOut',
-        });
-      });
 
-      ScrollTrigger.create({
-        trigger: mainContainer,
-        scroller: scroller,
-        start: 'top+=200 top',
-        end: 'bottom bottom+=800',
-        pin: '.blob-container',
-        pinSpacing: false,
-        id: 'blob-pin',
-        //markers: true,
-      });
+        ScrollTrigger.create({
+          trigger: mainContainer,
+          scroller: scroller,
+          start: 'top+=200 top',
+          end: 'bottom bottom+=800',
+          pin: '.blob-container',
+          pinSpacing: false,
+          id: 'blob-pin',
+        });
+      }
       // --- End Blob Logic ---
 
       // Set initial state for pinned text
@@ -312,8 +264,6 @@ const HowItWorks = memo(() => {
       {/* --- Optimization: Accessibility --- */}
       {/* Decorative elements are hidden from screen readers. */}
       <div className="blob-container" aria-hidden="true">
-        <div className="blob one"></div>
-        <div className="blob two"></div>
       </div>
 
       <div className="pin-container">

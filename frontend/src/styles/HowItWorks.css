@@ -2,8 +2,7 @@
 
 .how-it-works {
   position: relative;
-  /* background: #ffffff; */ /* <-- CHANGED */
-  background: #000a1f; /* <-- To match dark theme & see blobs */
+  background: transparent;
   padding: 20vh 0 20vh 0;
   border-radius: 50px;
 }
@@ -25,7 +24,7 @@
   font-size: 7rem;
   font-weight: 1000;
   line-height: 1.1;
-  color: #f1f5f9;
+  color: var(--text-primary);
   text-align: center;
   white-space: nowrap;
   z-index: 10;
@@ -79,24 +78,35 @@
   align-items: center;
   width: 80vw;
   height: 60vh;
-  padding: 2rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 3rem;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
   /* Glassmorphism background */
-  background: rgba(0, 16, 43, 0.500); /* Dark slate blue tint with 75% opacity */
-  backdrop-filter: blur(12px);          /* The "frosted glass" effect */
-  -webkit-backdrop-filter: blur(12px); /* For Safari support */
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 
   /* Glassmorphism border */
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 50px;
-  
-  /* --- CORRECTED GLOW --- */
-  box-shadow: 0 0 21px 6px rgba(59, 130, 246, 0.5); /* Blue glow */
+  border: 1px solid var(--glass-border);
+  border-radius: 40px;
+
+  /* Glow */
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1),
+    0 0 40px var(--accent-glow-primary);
 
   position: relative;
   z-index: 1;
   overflow: hidden;
+}
+
+.step-content:hover {
+  border-color: rgba(34, 211, 238, 0.3);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1),
+    0 0 60px rgba(34, 211, 238, 0.3);
 }
 
 /* We removed the conflicting .step-content::before rules */
@@ -132,13 +142,7 @@
   font-weight: 700;
   line-height: 1.2;
   margin: 0;
-
-  /* Light text for dark theme */
-  background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-
+  color: var(--text-primary);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -148,7 +152,7 @@
   font-size: clamp(1.5rem, 3vw, 2.5rem);
 
   /* Light text for dark theme */
-  color: #cbd5e1;
+  color: var(--text-secondary);
 
   margin: 0;
   max-width: 700px;
@@ -190,7 +194,7 @@
 
 @font-face {
   font-family: "GeneralSans-Semibold";
-  src: url("/assets/fonts/GeneralSans-Semibold.otf") format("opentype");
+  src: url("../assets/fonts/GeneralSans-Semibold.otf") format("opentype");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -206,7 +210,8 @@
   }
 
   .step-left {
-    align-items: center; /* Corrected typo 'align-itemss' */
+    align-items: center;
+    /* Corrected typo 'align-itemss' */
   }
 
   .step-right {
@@ -265,31 +270,5 @@
 */
 
 .blob-container {
-  position: absolute;
-  inset: 0; /* Cover the entire .how-it-works section */
-  overflow: hidden;
-  z-index: 100; /* Behind steps (z-index: 3) and title (z-index: 10) */
-  border-radius: inherit; /* Match parent's rounded corners */
-  pointer-events: none;
-}
-
-.blob {
-  position: absolute;
-  will-change: transform; /* Optimize for animation */
-  border-radius: 50%;
-  
-  /* --- This creates the "soft, airy" look --- */
-  opacity: 0.4; 
-  filter: blur(120px);
-  
-  /* --- Set colors to match your BG.jpg/theme --- */
-  background: radial-gradient(circle, #3b82f6 0%, #1e3a8a 100%);
-}
-
-/* First blob */
-.blob.one {
-  width: 700px;
-  height: 700px;
-  top: 10%;
-  left: 10%;
+  display: none;
 }

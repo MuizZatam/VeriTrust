@@ -27,8 +27,8 @@ const STYLES = {
 // --- Optimization: Pre-calculate Static Style Values ---
 // The gradient string is static, so we calculate it here, once.
 // This avoids any computation inside the component.
-const GRADIENT_COLORS = ["#273a5f", "#562a4a", "#000000"];
-const GRADIENT_STOPS = [0, 35, 70];
+const GRADIENT_COLORS = ["rgba(34, 211, 238, 0.08)", "rgba(192, 132, 252, 0.05)", "#09090b"];
+const GRADIENT_STOPS = [0, 40, 100];
 const GRADIENT_STOPS_STRING = GRADIENT_STOPS
   .map((stop, index) => `${GRADIENT_COLORS[index]} ${stop}%`)
   .join(", ");

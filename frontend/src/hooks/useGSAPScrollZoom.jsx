@@ -32,7 +32,7 @@ export const useGSAPScrollZoom = (options = {}) => {
   useGSAP(() => {
     // The `onUpdate` logic from the original is perfectly
     // performant and fine.
-    const st = ScrollTrigger.create({
+    ScrollTrigger.create({
       trigger: "body",
       start: start,
       end: end,
