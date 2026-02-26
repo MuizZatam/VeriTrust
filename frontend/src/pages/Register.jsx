@@ -70,6 +70,7 @@ const Register = () => {
                                 required
                             />
                         </div>
+
                         {error && <div className="error-message">{error}</div>}
                         <button type="submit" disabled={loading} className="submit-btn">
                             {loading ? 'Registering...' : 'Register'}
