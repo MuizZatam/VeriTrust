@@ -7,6 +7,7 @@
   "type": "commonjs",
   "main": "main.js",
   "dependencies": {
+    "crypto": "^1.0.1",
     "express": "^5.2.1"
   }
 }
