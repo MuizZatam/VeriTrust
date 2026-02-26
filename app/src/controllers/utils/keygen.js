@@ -7,16 +7,22 @@ async function generateRSAKeyPair() {
       hash: "SHA-256",
     },
     true,
-    ["sign", "verify"]
+    ["sign", "verify"],
   );
 
-  const publicKeyBuffer = await crypto.subtle.exportKey("spki", keyPair.publicKey);
-  const privateKeyBuffer = await crypto.subtle.exportKey("pkcs8", keyPair.privateKey);
+  const publicKeyBuffer = await crypto.subtle.exportKey(
+    "spki",
+    keyPair.publicKey,
+  );
+  const privateKeyBuffer = await crypto.subtle.exportKey(
+    "pkcs8",
+    keyPair.privateKey,
+  );
 
-  const publicKey = Buffer.from(publicKeyBuffer).toString('base64');
-  const privateKey = Buffer.from(privateKeyBuffer).toString('base64');
-
-  return { publicKey, privateKey };
+  return {
+    publicKey: Buffer.from(publicKeyBuffer).toString("base64"),
+    privateKey: Buffer.from(privateKeyBuffer).toString("base64"),
+  };
 }
 
 module.exports = { generateRSAKeyPair };
