@@ -6,7 +6,6 @@ import Hero from '../components/Hero';
 import HowItWorks from '../components/HowItWorks';
 import CTASection from '../components/CTASection';
 import Footer from '../components/Footer';
-import CustomCursor from '../components/elements/CustomCursor';
 import FooterGradient from '../components/elements/FooterGradient';
 
 const Home = () => {
@@ -37,7 +36,6 @@ const Home = () => {
                     </FooterGradient>
                 </div>
             </div>
-            <CustomCursor />
         </>
     );
 };
